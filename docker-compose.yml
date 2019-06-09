@@ -1,0 +1,57 @@
+  version: '3'
+
+  services:
+
+    #PHP Service
+    php:
+      container_name: php
+      build:
+        context: .
+        dockerfile: Dockerfile-php
+      working_dir: /var/www/laravel
+      restart: unless-stopped
+      ports:
+        - "9000:9000"
+      volumes:
+        - ./:/var/www/laravel
+      networks:
+        - app-network
+
+    #Nginx Service
+    webserve:
+      container_name: webserve
+      image: nginx:latest
+      working_dir: /var/www/laravel
+      restart: unless-stopped
+      ports:
+        - "9080:80"
+        - "4430:443"
+      volumes:
+        - ./:/var/www/laravel
+        - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+        - ./docker/nginx/log/:/var/log/nginx/
+      networks:
+        - app-network
+
+    #MySQL Service
+    db:
+      container_name: db
+      image: mysql:5.7
+      restart: unless-stopped
+      ports:
+        - "3307:3306"
+      environment:
+        MYSQL_DATABASE: laravel
+        MYSQL_ROOT_PASSWORD: laravel
+      networks:
+        - app-network
+
+
+  #Docker Networks
+  networks:
+    app-network:
+      driver: bridge
+
+
+
+
