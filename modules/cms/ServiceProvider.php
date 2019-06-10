@@ -29,7 +29,6 @@ class ServiceProvider extends ModuleServiceProvider
         $this->registerComponents();
         $this->registerThemeLogging();
         $this->registerCombinerEvents();
-        $this->registerHalcyonModels();
 
         /*
          * Backend specific
@@ -323,22 +322,6 @@ class ServiceProvider extends ModuleServiceProvider
             if ($type === 'cms-page') {
                 return CmsPage::getRichEditorTypeInfo($type);
             }
-        });
-    }
-
-    /**
-     * Registers the models to be made available to the theme database layer
-     */
-    protected function registerHalcyonModels()
-    {
-        Event::listen('system.console.theme.sync.getAvailableModelClasses', function () {
-            return [
-                Classes\Meta::class,
-                Classes\Page::class,
-                Classes\Layout::class,
-                Classes\Content::class,
-                Classes\Partial::class
-            ];
         });
     }
 }

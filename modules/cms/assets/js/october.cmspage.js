@@ -173,7 +173,7 @@
         var dataId = $target.closest('li').attr('data-tab-id'),
             title = $target.attr('title'),
             $sidePanel = $('#cms-side-panel')
-
+        
         if (title)
             this.setPageTitle(title)
 
@@ -250,8 +250,6 @@
 
         $form.on('changed.oc.changeMonitor', function() {
             $panel.trigger('modified.oc.tab')
-            $panel.find('[data-control=commit-button]').addClass('hide');
-            $panel.find('[data-control=reset-button]').addClass('hide');
             self.updateModifiedCounter()
         })
 
@@ -280,10 +278,6 @@
 
     CmsPage.prototype.onAjaxSuccess = function(ev, context, data) {
         var element = ev.target
-
-        // Update the visibilities of the commit & reset buttons
-        $('[data-control=commit-button]', element).toggleClass('hide', !data.canCommit)
-        $('[data-control=reset-button]', element).toggleClass('hide', !data.canReset)
 
         if (data.templatePath !== undefined) {
             $('input[name=templatePath]', element).val(data.templatePath)
@@ -318,11 +312,6 @@
 
         if (context.handler == 'onSave' && (!data['X_OCTOBER_ERROR_FIELDS'] && !data['X_OCTOBER_ERROR_MESSAGE'])) {
             $(element).trigger('unchange.oc.changeMonitor')
-        }
-
-        // Reload the form if the server has requested it
-        if (data.forceReload) {
-            this.reloadForm(element)
         }
     }
 
@@ -370,7 +359,7 @@
         }).done(function(data) {
             var tabs = $('#cms-master-tabs').data('oc.tab');
             $.each(data.deleted, function(index, path){
-                var
+                var 
                     tabId = templateType + '-' + data.theme + '-' + path,
                     tab = tabs.findByIdentifier(tabId)
 
@@ -386,12 +375,7 @@
     }
 
     CmsPage.prototype.onInspectorShowing = function(ev, data) {
-        var $dragScroll = $(ev.currentTarget).closest('[data-control="toolbar"]').data('oc.dragScroll')
-        if ($dragScroll) {
-            $dragScroll.goToElement(ev.currentTarget, data.callback)
-        } else {
-            data.callback();
-        }
+        $(ev.currentTarget).closest('[data-control="toolbar"]').data('oc.dragScroll').goToElement(ev.currentTarget, data.callback)
 
         ev.stopPropagation()
     }
@@ -656,7 +640,7 @@
     }
 
     CmsPage.prototype.reloadForm = function(form) {
-        var
+        var 
             $form = $(form),
             data = {
                 type: $('[name=templateType]', $form).val(),
@@ -698,7 +682,7 @@
         $(form).request('onGetTemplateList', {
             success: function(data) {
                 $('#cms-master-tabs > .tab-content select[name="settings[layout]"]').each(function(){
-                    var
+                    var 
                         $select = $(this),
                         value = $select.val()
 
